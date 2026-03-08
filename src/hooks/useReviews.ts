@@ -18,14 +18,20 @@ export const useReviews = (productId: string) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("product_reviews")
-        .select("*, profiles!product_reviews_user_id_fkey(name)")
+        .select("*")
         .eq("product_id", productId)
         .order("created_at", { ascending: false });
       if (error) throw error;
+
+      const userIds = [...new Set((data as any[]).map((r) => r.user_id))];
+      const { data: profiles } = userIds.length
+        ? await supabase.from("profiles").select("user_id, name").in("user_id", userIds)
+        : { data: [] };
+      const profileMap = new Map((profiles ?? []).map((p: any) => [p.user_id, p.name]));
+
       return (data as any[]).map((r) => ({
         ...r,
-        profile_name: r.profiles?.name ?? "Anonymous",
-        profiles: undefined,
+        profile_name: profileMap.get(r.user_id) ?? "Anonymous",
       })) as Review[];
     },
   });
