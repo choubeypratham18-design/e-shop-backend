@@ -50,6 +50,7 @@ const ProductDetail = () => {
           </Button>
         </div>
       </div>
+      <ProductReviews productId={product.id} />
     </div>
   );
 };
