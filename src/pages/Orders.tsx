@@ -64,7 +64,7 @@ const OrderBill = ({ order }: { order: any }) => {
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Shipping</span>
-              <span className="text-green-600">Free</span>
+              <span className="text-primary">Free</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Tax</span>
