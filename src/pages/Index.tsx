@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart, Heart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
 import { useAddToCart } from "@/hooks/useCart";
+import { useWishlist, useToggleWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
