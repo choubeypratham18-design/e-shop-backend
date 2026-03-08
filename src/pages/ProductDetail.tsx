@@ -5,6 +5,7 @@ import { useAddToCart } from "@/hooks/useCart";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import ProductReviews from "@/components/ProductReviews";
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -49,6 +50,7 @@ const ProductDetail = () => {
           </Button>
         </div>
       </div>
+      <ProductReviews productId={product.id} />
     </div>
   );
 };
