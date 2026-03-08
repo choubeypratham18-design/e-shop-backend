@@ -94,8 +94,9 @@ const Index = () => {
               key={product.id}
               className="group overflow-hidden rounded-lg border bg-card shadow-card transition-shadow hover:shadow-elevated"
             >
-              <Link to={`/product/${product.id}`}>
-                <div className="aspect-square overflow-hidden bg-muted">
+              <div className="relative">
+                <Link to={`/product/${product.id}`}>
+                  <div className="aspect-square overflow-hidden bg-muted">
                   {product.image_url ? (
                     <img
                       src={product.image_url}
