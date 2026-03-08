@@ -109,8 +109,15 @@ const Index = () => {
                       No image
                     </div>
                   )}
-                </div>
-              </Link>
+                  </div>
+                </Link>
+                <button
+                  onClick={() => handleToggleWishlist(product.id)}
+                  className="absolute right-2 top-2 rounded-full bg-card/80 p-1.5 backdrop-blur-sm transition-colors hover:bg-card"
+                >
+                  <Heart className={`h-4 w-4 ${isWishlisted(product.id) ? "fill-destructive text-destructive" : "text-muted-foreground"}`} />
+                </button>
+              </div>
               <div className="p-4">
                 <Link to={`/product/${product.id}`}>
                   <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">

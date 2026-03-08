@@ -48,10 +48,25 @@ const ProductDetail = () => {
           <p className="text-sm text-muted-foreground">
             {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
           </p>
-          <Button size="lg" onClick={handleAdd} disabled={product.stock === 0}>
-            <ShoppingCart className="mr-2 h-5 w-5" />
-            {product.stock === 0 ? "Sold Out" : "Add to Cart"}
-          </Button>
+          <div className="flex gap-3">
+            <Button size="lg" className="flex-1" onClick={handleAdd} disabled={product.stock === 0}>
+              <ShoppingCart className="mr-2 h-5 w-5" />
+              {product.stock === 0 ? "Sold Out" : "Add to Cart"}
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => {
+                if (!user) { toast.error("Please sign in"); return; }
+                toggleWishlist.mutate(
+                  { productId: product.id, isWishlisted },
+                  { onSuccess: () => toast.success(isWishlisted ? "Removed from wishlist" : "Added to wishlist!") }
+                );
+              }}
+            >
+              <Heart className={`h-5 w-5 ${isWishlisted ? "fill-destructive text-destructive" : ""}`} />
+            </Button>
+          </div>
         </div>
       </div>
       <ProductReviews productId={product.id} />

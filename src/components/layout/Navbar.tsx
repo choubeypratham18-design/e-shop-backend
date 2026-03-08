@@ -26,6 +26,12 @@ const Navbar = () => {
                   Orders
                 </Link>
               </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/wishlist">
+                  <Heart className="mr-1 h-4 w-4" />
+                  Wishlist
+                </Link>
+              </Button>
               <Button variant="ghost" size="sm" className="relative" asChild>
                 <Link to="/cart">
                   <ShoppingCart className="h-4 w-4" />
