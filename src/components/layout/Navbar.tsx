@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, LogOut, Package } from "lucide-react";
+import { ShoppingCart, User, LogOut, Package, Heart } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/useCart";
@@ -24,6 +24,12 @@ const Navbar = () => {
                 <Link to="/orders">
                   <Package className="mr-1 h-4 w-4" />
                   Orders
+                </Link>
+              </Button>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/wishlist">
+                  <Heart className="mr-1 h-4 w-4" />
+                  Wishlist
                 </Link>
               </Button>
               <Button variant="ghost" size="sm" className="relative" asChild>

@@ -1,7 +1,8 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ShoppingCart } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Heart } from "lucide-react";
 import { useProduct } from "@/hooks/useProducts";
 import { useAddToCart } from "@/hooks/useCart";
+import { useWishlist, useToggleWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -12,6 +13,9 @@ const ProductDetail = () => {
   const { data: product, isLoading } = useProduct(id!);
   const addToCart = useAddToCart();
   const { user } = useAuth();
+  const { data: wishlist } = useWishlist();
+  const toggleWishlist = useToggleWishlist();
+  const isWishlisted = wishlist?.some((item) => item.product_id === id) ?? false;
 
   if (isLoading) return <div className="container py-20 text-center text-muted-foreground">Loading...</div>;
   if (!product) return <div className="container py-20 text-center text-muted-foreground">Product not found</div>;
@@ -44,10 +48,25 @@ const ProductDetail = () => {
           <p className="text-sm text-muted-foreground">
             {product.stock > 0 ? `${product.stock} in stock` : "Out of stock"}
           </p>
-          <Button size="lg" onClick={handleAdd} disabled={product.stock === 0}>
-            <ShoppingCart className="mr-2 h-5 w-5" />
-            {product.stock === 0 ? "Sold Out" : "Add to Cart"}
-          </Button>
+          <div className="flex gap-3">
+            <Button size="lg" className="flex-1" onClick={handleAdd} disabled={product.stock === 0}>
+              <ShoppingCart className="mr-2 h-5 w-5" />
+              {product.stock === 0 ? "Sold Out" : "Add to Cart"}
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => {
+                if (!user) { toast.error("Please sign in"); return; }
+                toggleWishlist.mutate(
+                  { productId: product.id, isWishlisted },
+                  { onSuccess: () => toast.success(isWishlisted ? "Removed from wishlist" : "Added to wishlist!") }
+                );
+              }}
+            >
+              <Heart className={`h-5 w-5 ${isWishlisted ? "fill-destructive text-destructive" : ""}`} />
+            </Button>
+          </div>
         </div>
       </div>
       <ProductReviews productId={product.id} />

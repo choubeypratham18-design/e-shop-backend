@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart } from "lucide-react";
+import { Search, ShoppingCart, Heart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useProducts } from "@/hooks/useProducts";
 import { useAddToCart } from "@/hooks/useCart";
+import { useWishlist, useToggleWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -16,6 +17,19 @@ const Index = () => {
   const { data: products, isLoading } = useProducts(search, category);
   const addToCart = useAddToCart();
   const { user } = useAuth();
+  const { data: wishlist } = useWishlist();
+  const toggleWishlist = useToggleWishlist();
+
+  const isWishlisted = (productId: string) =>
+    wishlist?.some((item) => item.product_id === productId) ?? false;
+
+  const handleToggleWishlist = (productId: string) => {
+    if (!user) { toast.error("Please sign in to save items"); return; }
+    toggleWishlist.mutate(
+      { productId, isWishlisted: isWishlisted(productId) },
+      { onSuccess: () => toast.success(isWishlisted(productId) ? "Removed from wishlist" : "Added to wishlist!") }
+    );
+  };
 
   const handleAddToCart = (productId: string) => {
     if (!user) {
@@ -80,8 +94,9 @@ const Index = () => {
               key={product.id}
               className="group overflow-hidden rounded-lg border bg-card shadow-card transition-shadow hover:shadow-elevated"
             >
-              <Link to={`/product/${product.id}`}>
-                <div className="aspect-square overflow-hidden bg-muted">
+              <div className="relative">
+                <Link to={`/product/${product.id}`}>
+                  <div className="aspect-square overflow-hidden bg-muted">
                   {product.image_url ? (
                     <img
                       src={product.image_url}
@@ -94,8 +109,15 @@ const Index = () => {
                       No image
                     </div>
                   )}
-                </div>
-              </Link>
+                  </div>
+                </Link>
+                <button
+                  onClick={() => handleToggleWishlist(product.id)}
+                  className="absolute right-2 top-2 rounded-full bg-card/80 p-1.5 backdrop-blur-sm transition-colors hover:bg-card"
+                >
+                  <Heart className={`h-4 w-4 ${isWishlisted(product.id) ? "fill-destructive text-destructive" : "text-muted-foreground"}`} />
+                </button>
+              </div>
               <div className="p-4">
                 <Link to={`/product/${product.id}`}>
                   <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
