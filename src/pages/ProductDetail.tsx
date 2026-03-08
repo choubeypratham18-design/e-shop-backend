@@ -13,6 +13,9 @@ const ProductDetail = () => {
   const { data: product, isLoading } = useProduct(id!);
   const addToCart = useAddToCart();
   const { user } = useAuth();
+  const { data: wishlist } = useWishlist();
+  const toggleWishlist = useToggleWishlist();
+  const isWishlisted = wishlist?.some((item) => item.product_id === id) ?? false;
 
   if (isLoading) return <div className="container py-20 text-center text-muted-foreground">Loading...</div>;
   if (!product) return <div className="container py-20 text-center text-muted-foreground">Product not found</div>;
