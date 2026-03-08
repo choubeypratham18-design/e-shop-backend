@@ -17,6 +17,19 @@ const Index = () => {
   const { data: products, isLoading } = useProducts(search, category);
   const addToCart = useAddToCart();
   const { user } = useAuth();
+  const { data: wishlist } = useWishlist();
+  const toggleWishlist = useToggleWishlist();
+
+  const isWishlisted = (productId: string) =>
+    wishlist?.some((item) => item.product_id === productId) ?? false;
+
+  const handleToggleWishlist = (productId: string) => {
+    if (!user) { toast.error("Please sign in to save items"); return; }
+    toggleWishlist.mutate(
+      { productId, isWishlisted: isWishlisted(productId) },
+      { onSuccess: () => toast.success(isWishlisted(productId) ? "Removed from wishlist" : "Added to wishlist!") }
+    );
+  };
 
   const handleAddToCart = (productId: string) => {
     if (!user) {
