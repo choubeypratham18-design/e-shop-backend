@@ -1,9 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Minus, Plus, Trash2, ArrowLeft } from "lucide-react";
 import { useCart, useUpdateCartQuantity, useRemoveFromCart } from "@/hooks/useCart";
-import { useCheckout } from "@/hooks/useOrders";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
 const Cart = () => {
   const { data: cartItems, isLoading } = useCart();
