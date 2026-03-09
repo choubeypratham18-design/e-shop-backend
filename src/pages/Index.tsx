@@ -66,16 +66,31 @@ const Index = () => {
         </p>
       </section>
 
-      {/* Search & Filter */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
+      {/* Search, Filter & Sort */}
+      <div className="mb-8 flex flex-col gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              className="pl-10"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+            <Select value={sort} onValueChange={(v) => { setSort(v as SortOption); setPage(1); }}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest</SelectItem>
+                <SelectItem value="price_asc">Price: Low → High</SelectItem>
+                <SelectItem value="price_desc">Price: High → Low</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((cat) => (
@@ -83,7 +98,7 @@ const Index = () => {
               key={cat}
               variant={category === cat ? "default" : "secondary"}
               size="sm"
-              onClick={() => setCategory(cat)}
+              onClick={() => { setCategory(cat); setPage(1); }}
               className="capitalize"
             >
               {cat}
