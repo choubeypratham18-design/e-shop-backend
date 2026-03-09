@@ -16,13 +16,7 @@ const Cart = () => {
 
   const handleCheckout = () => {
     if (!cartItems?.length) return;
-    checkout.mutate(cartItems, {
-      onSuccess: () => {
-        toast.success("Order placed successfully!");
-        navigate("/orders");
-      },
-      onError: () => toast.error("Checkout failed"),
-    });
+    navigate("/checkout");
   };
 
   if (isLoading) return <div className="container py-20 text-center text-muted-foreground">Loading...</div>;
