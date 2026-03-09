@@ -7,7 +7,7 @@ const Cart = () => {
   const { data: cartItems, isLoading } = useCart();
   const updateQty = useUpdateCartQuantity();
   const removeItem = useRemoveFromCart();
-  const checkout = useCheckout();
+  
   const navigate = useNavigate();
 
   const total = cartItems?.reduce((sum, item) => sum + item.product.price * item.quantity, 0) ?? 0;
