@@ -1,20 +1,34 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, Heart } from "lucide-react";
+import { Search, ShoppingCart, Heart, ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useProducts } from "@/hooks/useProducts";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useProducts, PRODUCTS_PER_PAGE, type SortOption } from "@/hooks/useProducts";
 import { useAddToCart } from "@/hooks/useCart";
 import { useWishlist, useToggleWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const CATEGORIES = ["all", "electronics", "accessories", "footwear", "food", "home", "fitness"];
 
 const Index = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
-  const { data: products, isLoading } = useProducts(search, category);
+  const [sort, setSort] = useState<SortOption>("newest");
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useProducts(search, category, sort, page);
+  const products = data?.products;
+  const totalCount = data?.totalCount ?? 0;
+  const totalPages = Math.ceil(totalCount / PRODUCTS_PER_PAGE);
   const addToCart = useAddToCart();
   const { user } = useAuth();
   const { data: wishlist } = useWishlist();
