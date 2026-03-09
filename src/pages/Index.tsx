@@ -206,6 +206,7 @@ const Index = () => {
         </Pagination>
       )}
     </div>
+  );
 };
 
 export default Index;
