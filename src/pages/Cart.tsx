@@ -67,8 +67,8 @@ const Cart = () => {
               <span>Total</span>
               <span className="text-primary">${total.toFixed(2)}</span>
             </div>
-            <Button className="mt-4 w-full" size="lg" onClick={handleCheckout} disabled={checkout.isPending}>
-              {checkout.isPending ? "Processing..." : "Checkout (Simulated Payment)"}
+            <Button className="mt-4 w-full" size="lg" onClick={handleCheckout}>
+              Proceed to Checkout
             </Button>
           </div>
         </div>
