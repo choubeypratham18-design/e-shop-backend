@@ -8,7 +8,7 @@ The source code is hosted and managed on GitHub.
 ## Repository
 
 GitHub Repository:
-https://github.com/YOUR_USERNAME/YOUR_REPOSITORY_NAME
+https://github.com/choubeypratham18-design/e-shop-backend
 
 ---
 
