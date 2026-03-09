@@ -1,20 +1,34 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, ShoppingCart, Heart } from "lucide-react";
+import { Search, ShoppingCart, Heart, ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useProducts } from "@/hooks/useProducts";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useProducts, PRODUCTS_PER_PAGE, type SortOption } from "@/hooks/useProducts";
 import { useAddToCart } from "@/hooks/useCart";
 import { useWishlist, useToggleWishlist } from "@/hooks/useWishlist";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
 const CATEGORIES = ["all", "electronics", "accessories", "footwear", "food", "home", "fitness"];
 
 const Index = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
-  const { data: products, isLoading } = useProducts(search, category);
+  const [sort, setSort] = useState<SortOption>("newest");
+  const [page, setPage] = useState(1);
+  const { data, isLoading } = useProducts(search, category, sort, page);
+  const products = data?.products;
+  const totalCount = data?.totalCount ?? 0;
+  const totalPages = Math.ceil(totalCount / PRODUCTS_PER_PAGE);
   const addToCart = useAddToCart();
   const { user } = useAuth();
   const { data: wishlist } = useWishlist();
@@ -52,16 +66,31 @@ const Index = () => {
         </p>
       </section>
 
-      {/* Search & Filter */}
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search products..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10"
-          />
+      {/* Search, Filter & Sort */}
+      <div className="mb-8 flex flex-col gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              className="pl-10"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+            <Select value={sort} onValueChange={(v) => { setSort(v as SortOption); setPage(1); }}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest</SelectItem>
+                <SelectItem value="price_asc">Price: Low → High</SelectItem>
+                <SelectItem value="price_desc">Price: High → Low</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((cat) => (
@@ -69,7 +98,7 @@ const Index = () => {
               key={cat}
               variant={category === cat ? "default" : "secondary"}
               size="sm"
-              onClick={() => setCategory(cat)}
+              onClick={() => { setCategory(cat); setPage(1); }}
               className="capitalize"
             >
               {cat}
@@ -144,6 +173,37 @@ const Index = () => {
             </div>
           ))}
         </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <Pagination className="mt-8">
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                className={page === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+              />
+            </PaginationItem>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <PaginationItem key={p}>
+                <PaginationLink
+                  isActive={p === page}
+                  onClick={() => setPage(p)}
+                  className="cursor-pointer"
+                >
+                  {p}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                className={page === totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       )}
     </div>
   );
