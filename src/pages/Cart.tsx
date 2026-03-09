@@ -1,28 +1,20 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Minus, Plus, Trash2, ArrowLeft } from "lucide-react";
 import { useCart, useUpdateCartQuantity, useRemoveFromCart } from "@/hooks/useCart";
-import { useCheckout } from "@/hooks/useOrders";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
 const Cart = () => {
   const { data: cartItems, isLoading } = useCart();
   const updateQty = useUpdateCartQuantity();
   const removeItem = useRemoveFromCart();
-  const checkout = useCheckout();
+  
   const navigate = useNavigate();
 
   const total = cartItems?.reduce((sum, item) => sum + item.product.price * item.quantity, 0) ?? 0;
 
   const handleCheckout = () => {
     if (!cartItems?.length) return;
-    checkout.mutate(cartItems, {
-      onSuccess: () => {
-        toast.success("Order placed successfully!");
-        navigate("/orders");
-      },
-      onError: () => toast.error("Checkout failed"),
-    });
+    navigate("/checkout");
   };
 
   if (isLoading) return <div className="container py-20 text-center text-muted-foreground">Loading...</div>;
@@ -75,8 +67,8 @@ const Cart = () => {
               <span>Total</span>
               <span className="text-primary">${total.toFixed(2)}</span>
             </div>
-            <Button className="mt-4 w-full" size="lg" onClick={handleCheckout} disabled={checkout.isPending}>
-              {checkout.isPending ? "Processing..." : "Checkout (Simulated Payment)"}
+            <Button className="mt-4 w-full" size="lg" onClick={handleCheckout}>
+              Proceed to Checkout
             </Button>
           </div>
         </div>
